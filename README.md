@@ -4,13 +4,13 @@ A 'Runnable' is an object that has a well-defined interface and run() method.
 This makes it easy to create a command-line interface, web form, or web service for the object.
 
 Installation
-----
+====
 
 Usage 
-----
+====
 
 Defining a 'Runnable'
-====
+----
 
 Every runnable uses a django Form to define the arguments that it requires. 
 For example, lets make a runnable that allows us to add two numbers. 
