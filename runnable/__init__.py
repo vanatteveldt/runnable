@@ -6,4 +6,4 @@ See the help text for the Runnable class and/or http://github.com/vanatteveldt/r
 """
 
 
-from .runnable import Runnable
+from .runnable import Runnable, create_runnable

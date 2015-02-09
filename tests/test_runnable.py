@@ -1,9 +1,11 @@
 from django import forms
-from runnable import Runnable
+from runnable import Runnable, create_runnable
+from runnable.runnable import check_django_settings
 from nose.tools import assert_equal, assert_in, raises, assert_raises
 from cStringIO import StringIO
 import sys
 
+check_django_settings()
 
 class SimpleRunnable(Runnable):
     "class docstring"
@@ -16,9 +18,12 @@ class SimpleRunnable(Runnable):
 def _test_add(a, b):
     return a+b
 
-class ExternalRunnable(Runnable):
+class ABForm(forms.Form):
     a = forms.IntegerField()
     b = forms.IntegerField()
+
+
+class ExternalRunnable(ABForm, Runnable):
     target = _test_add
 
 
@@ -27,9 +32,7 @@ class SomeOtherClass(object):
     def _test_add(cls, a, b):
         return a+b
 
-class ExternalClassRunnable(Runnable):
-    a = forms.IntegerField()
-    b = forms.IntegerField()
+class ExternalClassRunnable(ABForm, Runnable):
     target = SomeOtherClass._test_add
 
 
@@ -50,6 +53,13 @@ def test_unbound():
 
     assert_equal(ExternalRunnable().call(a=1, b=2), 3)
     assert_equal(ExternalClassRunnable().call(a=1, b=2), 3)
+
+
+def test_create_runnable():
+    "Does the create_runnable code work?"
+    MyRunnable = create_runnable(form=ABForm, target=lambda a,b: a+b)
+    assert_equal(MyRunnable().call(2, 2), 4)
+    assert_equal(MyRunnable({'a': 3, 'b': 4}).run(), 7)
 
 
 def test_validation_error():

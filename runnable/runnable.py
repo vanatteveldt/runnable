@@ -53,6 +53,13 @@ class Runnable(forms.Form):
         return _run_cli(cls, *args)
 
 
+def create_runnable(form, target):
+    _target = target
+    class Inner(form, Runnable):
+        target = _target
+    return Inner
+
+
 def check_django_settings():
     """
     Provide default django settings if no settings are specified
