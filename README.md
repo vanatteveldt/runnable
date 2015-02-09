@@ -31,6 +31,20 @@ class Adder(Runnable):
     return a + b
 ```
 
+An alternative way to define the same Runnable is to point to an external function using `target`:
+
+```{python}
+def add(a, b):
+  return a+b
+
+class Adder(Runnable):
+  a = forms.IntegerField()
+  b = forms.IntegerField()
+  target = add
+```
+
+(and yet another alternative is to use `create_runnable(form, target)`)
+
 Using a Runnable from python
 ----
 
@@ -162,24 +176,3 @@ And a template like:
 Will yield a view with a form that works as expected, performing validation and (in this case) rendering the result below the form:
 
 ![Runnable Result](http://i.imgur.com/nWvleU1.png)
-
-Defining a 'Runnable'
-----
-
-Essentially, a Runnable is a django form with a function to be invoked.
-This function can be specified in two ways, either by pointing to an external function
-or by overriding the call method:
-
-```{python}
-class PlusOne(Runnable):
-  a = forms.IntegerField()
-  def call(self, a):
-    return a + 1
-    
-def external_plus(a): 
-  return a + 2
-  
-class PlusTwo(Runnable)
-  a = forms.IntegerField()
-  target = external_plus
-```
