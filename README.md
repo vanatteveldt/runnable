@@ -103,6 +103,66 @@ usage: adder.py [-h] [--second second] first
 adder.py: error: argument first: invalid int value: 'notanumber'
 ```
 
+
+Using a Runnable as a django view
+----
+
+runnable.views provides a RunnableMixin and RunnableView (inheriting from FormMixin and ProcessFormView+TemplateResponseMixin, respectively) that make it easy to create a simple web page to access the functionality of a Runnable.
+
+For example, if we have the following view:
+
+```{python}
+from django import forms
+from runnable import Runnable
+from runnable.views import RunnableView
+
+class Duplicator(Runnable):
+    """This is an extremely useful Runnable that allows you to duplicate arbitrary integers"""
+    a = forms.IntegerField(help_text="This is the number that will be duplicated")
+    def call(self, a):
+        return a*2
+
+class TestView(RunnableView):
+    template_name = "template.html"
+    form_class = Duplicator
+    def form_valid(self, form):
+        """Prevent default redirection"""
+        self.run(form)
+        return self.form_invalid(form)
+```
+
+And a template like:
+
+```{python}
+<html>
+ <head>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" />
+ </head>
+ <body>
+  <div class="container">
+   <div class="jumbotron" style="margin-top: 2em">
+    <h1>{{form_name}}</h1>
+    <p>{{form_doc}}</p>
+    <form action='#' method='POST'>
+     <table>
+      {{form.as_table}}
+      <tr><td /><td><input type='submit'></td></tr>
+     </table>
+    </form>
+{% if result %}
+    <hr/>
+    <h2>The result is: <strong>{{result}}</strong></h2>
+{% endif %}
+   </div>
+  </div>
+ </body>
+</html>
+```
+
+Will yield a view with a form that works as expected, performing validation and (in this case) rendering the result below the form:
+
+![Runnable Result](http://i.imgur.com/nWvleU1.png)
+
 Defining a 'Runnable'
 ----
 
