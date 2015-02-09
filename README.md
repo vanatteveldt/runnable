@@ -133,7 +133,7 @@ class TestView(RunnableView):
 
 And a template like:
 
-```{python}
+```{html}
 <html>
  <head>
   <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" />
@@ -170,7 +170,7 @@ Essentially, a Runnable is a django form with a function to be invoked.
 This function can be specified in two ways, either by pointing to an external function
 or by overriding the call method:
 
-```
+```{python}
 class PlusOne(Runnable):
   a = forms.IntegerField()
   def call(self, a):
